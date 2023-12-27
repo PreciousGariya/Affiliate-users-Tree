@@ -33,7 +33,7 @@ class UserFactory extends Factory
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
             'referral_code' =>Str::random(8),
-            'referrer_id' =>554,
+            'referrer_id' =>8,
         ];
     }
 

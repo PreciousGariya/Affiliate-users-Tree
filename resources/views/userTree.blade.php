@@ -5,11 +5,11 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" />
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/orgchart/4.0.1/js/jquery.orgchart.js"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/orgchart/4.0.1/css/jquery.orgchart.css" integrity="sha512-Tnxj/C1VZKWks1kmK3dcJUFF5BxbhZsQgTR0MAKo9+a2Gz4mP+QbqC4hnJaf15UlLXlYzhqrerlK5/4e0aphPA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/orgchart/4.0.1/css/jquery.orgchart.css"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" rel="stylesheet">
+
     <style>
 body {
   font-family: Calibri, Segoe, "Segoe UI", "Gill Sans", "Gill Sans MT", sans-serif;
@@ -91,26 +91,42 @@ body {
     }
         #chart-container {
     font-family: Arial;
-    height: 420px;
+    /* height: 420px; */
     border: 1px solid #aaa;
     overflow: auto;
     text-align: center;
     }
+
+    /* //org chart style */
+    .orgchart .top-level .title {
+  background-color: #006699;
+}
+.orgchart .top-level .content {
+  border-color: #006699;
+}
+.orgchart .middle-level .title {
+  background-color: #009933;
+}
+.orgchart .middle-level .content {
+  border-color: #009933;
+}
+.orgchart .bottom-level .title {
+  background-color: #993366;
+}
+.orgchart .bottom-level .content {
+  border-color: #993366;
+}
+
+.orgchart .node .content{
+    height: 194px!important;
+}
     </style>
 </head>
 <body>
 <h1>User Tree</h1>
-<ul class="tree" id="ul-data">
-    <li>
-            <span><a href="{{route('userTree',$usersTree->id) }}"> {{ $usersTree->name   }}</a></span>
-            <ul>
-                @include('partials.user_tree', ['usersTree' => $usersTree->referred_users])
-            </ul>
-        </li>
 
-</ul>
 
-<!-- <div id="chart-container"></div> -->
+<div id="chart-container"></div>
 
 </body>
 <script>
@@ -122,16 +138,30 @@ body {
 // });
 
 // });
-    // (function($) {
-    //     $(function() {
-    //         var ds = {!! json_encode($usersTree) !!};
+(function($) {
+    $(function() {
+        var ds = {!! json_encode($usersTree) !!};
+        console.log(ds);
 
-    //         var oc = $('#chart-container').orgchart({
-    //             'data': ds,
-    //             'nodeContent': 'title'
-    //         });
-    //     });
-    // })(jQuery);
+        var oc = $('#chart-container').orgchart({
+            'data': ds,
+            'nodeContent': 'total_childs',
+            'createNode': function($node, data) {
+                // Add profile photo to the node
+                var photoUrl = data.photo || 'default_photo_url.jpg'; // Provide a default photo URL if 'photo' is not available
+                $($node).find('.content').append(`<p><span class="user-plan">Bronze</span></p><div class="profile-photo"><img src="${photoUrl}" alt="Profile Photo" width="100"></div><a href="/userTree/${data.id}">View Details</a>`);
+                // $node.append(`<span class="user-plan">Bronze</span><div class="profile-photo" style="display:none"><img src="${photoUrl}" alt="Profile Photo" width="100"></div>`);
+            }
+        });
+        console.log('oc', oc);
+        // $('.node').click(function (e) {
+        //     e.preventDefault();
+        //     console.log("click");
+        //     $(this).find('.profile-photo').show();
+        // });
+    });
+})(jQuery);
+
 </script>
 
 </html>

@@ -26,6 +26,7 @@ class DashboardController extends Controller
 
     public static function buildTree(User $user)
 {
+    $className= ['middle-level','bottom-level','top-level'];
     $tree = [
         "id" => $user->id,
         "name" => $user->name,
@@ -36,14 +37,19 @@ class DashboardController extends Controller
         "referral_level" => 0, // Assuming you want to start with 0, you can adjust this as needed
         "created_at" => $user->created_at,
         "updated_at" => $user->updated_at,
-        "referred_users" => [],
+        "photo" => 'https://source.unsplash.com/300x300?user',
+        "className"=> ($user->children->count() > 0) ? $className[2] : $className[rand(0, 1)],
+        // "referred_users" => [],
+        'total_childs' => 'Total Referrals:'. $user->children->count()??0,
+        "children" => [],
     ];
 
     // Recursively build the tree for each referred user
     if ($user->referredUsers) {
         foreach ($user->referredUsers as $referredUser) {
             $childTree = self::buildTree($referredUser);
-            $tree["referred_users"][] = $childTree;
+            // $tree["referred_users"][] = $childTree;
+            $tree["children"][] = $childTree;
         }
     }
 
